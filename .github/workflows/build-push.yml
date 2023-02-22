@@ -35,7 +35,6 @@ jobs:
       with:
         context: .
         push: true
-        image: ${{ secrets.DOCKER_USERNAME }}/reactive-project
-        tags: 1.0.$GITHUB_RUN_NUMBER, latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/reactive-project:1.0.$GITHUB_RUN_NUMBER
         
       
