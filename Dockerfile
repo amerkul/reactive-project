@@ -1,6 +1,6 @@
 FROM openjdk:18.0 as build
 LABEL maintainer="Anna Merkul <anna.merkul@bk.ru>"
-ARG JAR_FILE=/target/article-postgres-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=/target/*.jar
 COPY ${JAR_FILE} application.jar
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /application.jar)
 FROM openjdk:18.0
