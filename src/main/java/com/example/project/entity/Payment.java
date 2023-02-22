@@ -24,9 +24,13 @@ public class Payment {
     private long id;
     private BigDecimal amount;
     private LocalDateTime created;
+    private long billingId;
     private Billing billing;
 
     public static Payment fromRow(Map<String, Object> row) {
+        if (row.get("payment_id") == null) {
+            return null;
+        }
         return Payment.builder()
                 .id(Long.parseLong(row.get("payment_id").toString()))
                 .amount(new BigDecimal(row.get("amount").toString()))

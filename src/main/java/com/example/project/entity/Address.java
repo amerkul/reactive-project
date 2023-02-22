@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@With
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,6 +51,20 @@ public class Address {
                       .zip(Integer.parseInt(row.get("zip").toString()))
                       .created(LocalDateTime.parse(row.get("address_created").toString()).toLocalDate())
                       .updated(LocalDateTime.parse(row.get("address_updated").toString()).toLocalDate())
+                      .build();
+    }
+
+    public static Address fromRowForVendorBusiness(Map<String, Object> row) {
+        return Address.builder()
+                      .id(Long.parseLong(row.get("address_business_address_id").toString()))
+                      .country(row.get("address_business_country").toString())
+                      .state(row.get("address_business_state").toString())
+                      .stateAbbreviation(row.get("address_business_state_abbreviation").toString())
+                      .city(row.get("address_business_city").toString())
+                      .street(row.get("address_business_street").toString())
+                      .zip(Integer.parseInt(row.get("address_business_zip").toString()))
+                      .created(LocalDateTime.parse(row.get("address_business_created").toString()).toLocalDate())
+                      .updated(LocalDateTime.parse(row.get("address_business_updated").toString()).toLocalDate())
                       .build();
     }
 

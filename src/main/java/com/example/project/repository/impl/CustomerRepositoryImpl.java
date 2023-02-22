@@ -35,7 +35,13 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             """;
 
     private static final String INSERT_CUSTOMER = """
-            INSERT INTO customers(email, user_id) VALUES (:email, :userId) RETURNING user_id
+            INSERT INTO customers(email, user_id) VALUES (:email, :userId)
+            """;
+
+    private static final String UPDATE_CUSTOMER = """
+            UPDATE customers
+            SET email = :email
+            WHERE user_id = :userId
             """;
 
 
@@ -47,19 +53,28 @@ public class CustomerRepositoryImpl implements CustomerRepository {
                      .fetch()
                      .all()
                      .bufferUntilChanged(result -> result.get("user_id"))
-                     .log()
                      .flatMap(Customer::fromRows);
     }
 
     @Override
     public Mono<Customer> saveCustomer(long userId, String email) {
         return client.sql(INSERT_CUSTOMER)
+                .filter((statement, executeFunction) -> statement.returnGeneratedValues("user_id").execute())
                 .bind("email", email)
                 .bind("userId", userId)
                 .fetch()
                 .first()
-                .log()
                 .map(row -> new Customer(Long.parseLong(row.get("user_id").toString())));
     }
 
+    @Override
+    public Mono<Void> updateCustomer(long userId, String email) {
+        return client.sql(UPDATE_CUSTOMER)
+                .bind("email", email)
+                .bind("userId", userId)
+                .fetch()
+                .first()
+                .then();
+
+    }
 }

@@ -9,4 +9,7 @@ public interface CustomerRepository{
     Flux<Customer> findAllCustomers();
     Mono<Customer> saveCustomer(long userId, String email);
 
+    Mono<Void> updateCustomer(long userId, String email);
+
+
 }

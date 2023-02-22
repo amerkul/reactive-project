@@ -43,10 +43,12 @@ public class Customer extends User {
                                  .orders(rows.stream()
                                              .map(row -> Order.fromRow(row, rows))
                                              .filter(Objects::nonNull)
+                                             .distinct()
                                              .toList())
                                  .billings(rows.stream()
                                                .map(row -> Billing.fromRow(row, rows))
                                                .filter(Objects::nonNull)
+                                               .distinct()
                                                .toList())
                                  .build()
         );

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -23,7 +24,11 @@ public class OrderDetail {
     private long id;
     private int number;
     private BigDecimal cost;
+    private long businessId;
+    private long orderId;
+    @Transient
     private Order order;
+    @Transient
     private Business business;
 
     public static OrderDetail fromRows(Map<String, Object> row) {

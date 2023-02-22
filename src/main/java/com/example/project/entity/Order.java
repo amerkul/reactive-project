@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -27,9 +28,11 @@ public class Order {
     @Column("total_cost")
     private BigDecimal totalCost;
     private LocalDateTime created;
+    @Column("user_id")
+    private long userId;
     @Transient
     private Customer customer;
-    
+
     @Transient
     private List<OrderDetail> orderDetails;
 
@@ -49,6 +52,8 @@ public class Order {
                     .orderDetails(rows.stream()
                                       .filter(r -> Long.parseLong(r.get("order_id").toString()) == orderId)
                                       .map(OrderDetail::fromRows)
+                                      .filter(Objects::nonNull)
+                                      .distinct()
                                       .toList())
                     .build();
     }
