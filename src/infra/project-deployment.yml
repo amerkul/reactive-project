@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: project
+  template:
+    metadata:
+      labels:
+        app: project
+    spec:
+      containers:
+        - name: project-container
+          image: amerkul/reactive-project
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: project-configmap
+                  key: SPRING_PROFILES_ACTIVE
+            - name: DATABASESERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: project-configmap
+                  key: DATABASESERVER_PORT
