@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@With
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +47,17 @@ public class Phone {
                 .created(LocalDateTime.parse(row.get("phone_created").toString()).toLocalDate())
                 .updated(LocalDateTime.parse(row.get("phone_updated").toString()).toLocalDate())
                 .build();
+    }
+
+    public static Phone fromRowForVendorBusiness(Map<String, Object> row) {
+        return Phone.builder()
+                    .id(Long.parseLong(row.get("phone_business_phone_id").toString()))
+                    .number(Integer.parseInt(row.get("phone_business_number").toString()))
+                    .areaCode(Integer.parseInt(row.get("phone_business_area_code").toString()))
+                    .countryCode(Integer.parseInt(row.get("phone_business_country_code").toString()))
+                    .created(LocalDateTime.parse(row.get("phone_business_created").toString()).toLocalDate())
+                    .updated(LocalDateTime.parse(row.get("phone_business_updated").toString()).toLocalDate())
+                    .build();
     }
 
 }

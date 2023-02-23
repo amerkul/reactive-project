@@ -1,6 +1,7 @@
 package com.example.project.controller;
 
 import com.example.project.dto.CustomerDto;
+import com.example.project.entity.Customer;
 import com.example.project.entity.User;
 import com.example.project.service.CustomerService;
 import com.example.project.util.ModelMapperUtil;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -23,19 +25,22 @@ public class CustomerRoute {
 
     @Bean
     public RouterFunction<ServerResponse> composedRoutes() {
-        return route(
-                GET("/customer/all"),
+        return route(GET("/customer/all"),
                 request -> ok().body(
                         customerService.retrieveAll()
-                                       .map(customer -> mapperUtil.dtoBuilder(customer, CustomerDto.class)), CustomerDto.class)
-        ).and(route(
-                GET("/users"),
-                request -> ok().body(customerService.retrieveAllUsers(), User.class)
-        )).and(route(
-                GET("/customers"),
-                request -> ok().body(customerService.retrieveAllCustomers()
-                                                    .map(customer -> mapperUtil.dtoBuilder(customer, CustomerDto.class)), CustomerDto.class)
-        ));
+                                       .map(customer -> mapperUtil.dtoBuilder(customer, CustomerDto.class)), CustomerDto.class))
+                .and(route(GET("/users"),
+                        request -> ok().body(customerService.retrieveAllUsers(), User.class)))
+                .and(route(GET("/customers"),
+                        request -> ok().body(customerService.retrieveAllCustomers()
+                                                            .map(customer -> mapperUtil.dtoBuilder(customer, CustomerDto.class)), CustomerDto.class)))
+                .and(route(GET("/customer/{id}"),
+                        request -> {
+                            Mono<Customer> customer = Mono.justOrEmpty(request.pathVariable("id"))
+                                                          .map(Long::parseLong)
+                                                          .flatMap(customerService::retrieveCustomerById);
+                            return ok().body(customer.map(c -> mapperUtil.dtoBuilder(c, CustomerDto.class)), CustomerDto.class);
+                        }));
     }
 
 }
