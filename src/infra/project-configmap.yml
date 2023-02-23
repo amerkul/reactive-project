@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: project-configmap
+data:
+  SPRING_PROFILES_ACTIVE: "dev"
+  DATABASESERVER_PORT: "5432"
